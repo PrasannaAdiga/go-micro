@@ -19,7 +19,7 @@ const webPort = "80"
 var counts int64
 
 type Config struct {
-	DB     *sql.DB
+	DB *sql.DB
 	Models data.Models
 }
 
@@ -34,17 +34,15 @@ func main() {
 
 	// set up config
 	app := Config{
-		DB:     conn,
+		DB: conn,
 		Models: data.New(conn),
 	}
 
-	// define http server
 	srv := &http.Server{
-		Addr:    fmt.Sprintf(":%s", webPort),
+		Addr: fmt.Sprintf(":%s", webPort),
 		Handler: app.routes(),
 	}
 
-	// start htto server
 	err := srv.ListenAndServe()
 	if err != nil {
 		log.Panic(err)
@@ -68,11 +66,6 @@ func openDB(dsn string) (*sql.DB, error) {
 func connectToDB() *sql.DB {
 	dsn := os.Getenv("DSN")
 
-	// Tryint to connect to DB
-	// And if in case DB is not yet up
-	// Wait for 2 seconds and then retry connecting to it
-	// Here we retry for 10 times and in case it is not connected
-	// Then stopping this service
 	for {
 		connection, err := openDB(dsn)
 		if err != nil {
